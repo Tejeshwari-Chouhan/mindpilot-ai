@@ -3,13 +3,12 @@ import { getAnalytics, isSupported, Analytics } from "firebase/analytics";
 
 // MindPilot AI Firebase Configuration
 export const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyCHyHexoaoleFSIyOMMRsatzgeNZpGSAyA",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "mindpilot-5274b.firebaseapp.com",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "mindpilot-5274b",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "mindpilot-5274b.firebasestorage.app",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "44463346821",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:44463346821:web:456da6c3a576fc6d1085ec",
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-67H6W0ZJWF"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyAZkHJvI5ovH-LdPNeNPceLk0_qSsbx0aI",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "mindpilot-ai-wellness.firebaseapp.com",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "mindpilot-ai-wellness",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "mindpilot-ai-wellness.firebasestorage.app",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "949161331165",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:949161331165:web:ea60f16c7c41ab64710e34"
 };
 
 // Initialize Firebase singleton (safe for Next.js SSR / hot-reload)
