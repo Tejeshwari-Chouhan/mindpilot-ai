@@ -30,11 +30,11 @@ export function getGCPConfig(): GCPConfig {
   const projectId = 
     process.env.GCP_PROJECT_ID || 
     process.env.GOOGLE_CLOUD_PROJECT || 
-    'mindpilot-resilience-gcp';
+    'mindpilot-5274b';
 
   const region = process.env.GCP_REGION || 'asia-south1'; // Default to India region for JEE/NEET/UPSC aspirants
   const vertexAiLocation = process.env.VERTEX_AI_LOCATION || 'us-central1';
-  const storageBucket = process.env.GCS_BUCKET_NAME || `${projectId}-media-vault`;
+  const storageBucket = process.env.GCS_BUCKET_NAME || 'mindpilot-5274b.firebasestorage.app';
   const bigQueryDataset = process.env.BIGQUERY_DATASET || 'mindpilot_analytics';
 
   const hasCredentials = Boolean(

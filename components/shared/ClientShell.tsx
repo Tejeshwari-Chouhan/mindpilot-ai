@@ -5,6 +5,7 @@ import Navbar from './Navbar';
 import { useStudentData } from '@/hooks/useStudentData';
 import PomodoroWidget from './PomodoroWidget';
 import GuidedTour from './GuidedTour';
+import '@/lib/firebase';
 
 type Theme = 'dark' | 'light';
 type FontSize = 'normal' | 'large' | 'xlarge';
