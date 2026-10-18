@@ -13,7 +13,7 @@ import MomBestFriend from '@/components/dashboard/MomBestFriend';
 import CrisisHelplineBanner from '@/components/shared/CrisisHelplineBanner';
 import { detectCrisisLanguage } from '@/lib/safety';
 import { getInterventionForStudent } from '@/lib/mockData';
-import { Activity, Sparkles, MessageSquare, Compass, ShieldAlert, Award, RefreshCw, AlertCircle, Gamepad2, Smile, Brain, Trophy, Cloud } from 'lucide-react';
+import { Activity, Sparkles, MessageSquare, Compass, ShieldAlert, Award, RefreshCw, AlertCircle, Gamepad2, Smile, Brain, Trophy } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -233,17 +233,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Footer Links */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-        <Link 
-          href="/cloud-intelligence" 
-          className="glass-panel p-4 rounded-xl flex items-center gap-3 hover:bg-white/5 transition-all text-xs font-semibold focus:ring-2 focus:ring-primary outline-none border border-primary/30"
-        >
-          <Cloud size={20} className="text-primary animate-pulse" />
-          <div>
-            <span className="block text-foreground font-bold">Cloud Intelligence</span>
-            <span className="text-[10px] text-text-muted font-normal">Vertex AI, Earth Engine, BigQuery & Vision</span>
-          </div>
-        </Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
 
         <Link 
           href="/calm-room" 

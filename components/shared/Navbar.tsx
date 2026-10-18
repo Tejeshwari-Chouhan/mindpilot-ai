@@ -18,8 +18,7 @@ import {
   Trophy,
   Tv,
   Camera,
-  HelpCircle,
-  Cloud
+  HelpCircle
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -31,7 +30,6 @@ export default function Navbar() {
     { name: 'Dashboard', path: '/', icon: BrainCircuit },
     ...(profile ? [] : [{ name: 'Onboarding', path: '/onboarding', icon: Calendar }]),
     { name: 'AI Companion', path: '/companion', icon: MessageSquare },
-    { name: 'Cloud Intelligence', path: '/cloud-intelligence', icon: Cloud },
     { name: 'Relax Room', path: '/relax', icon: Gamepad2 },
     { name: 'Zen Streams', path: '/zen-streams', icon: Tv },
     { name: 'Zen Face Cam', path: '/zen-face-cam', icon: Camera },
