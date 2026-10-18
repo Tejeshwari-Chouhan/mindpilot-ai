@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.github
+mentalwelness-main
+photos
+tests
+*.log
+.DS_Store
+.env*.local
+README.md
+CLAUDE.md
+AGENTS.md
+docs

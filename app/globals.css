@@ -1,0 +1,261 @@
+@import "tailwindcss";
+
+:root {
+  --background: linear-gradient(180deg, #d2ecff 0%, #eafcf1 100%);
+  --foreground: #0f172a;
+  
+  --card-bg: rgba(255, 255, 255, 0.72);
+  --card-border: rgba(0, 0, 0, 0.06);
+  
+  --primary: #059669; /* Serene Green */
+  --primary-glow: rgba(5, 150, 105, 0.1);
+  --secondary: #0284c7; /* Serene Blue */
+  --accent: #d97706; /* Cozy Sunset Amber */
+  
+  --text-muted: #475569;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+}
+
+/* Light mode overrides (also nature by default) */
+.light-mode {
+  --background: linear-gradient(180deg, #d2ecff 0%, #eafcf1 100%);
+  --foreground: #0f172a;
+  
+  --card-bg: rgba(255, 255, 255, 0.72);
+  --card-border: rgba(0, 0, 0, 0.06);
+  
+  --primary: #059669;
+  --primary-glow: rgba(5, 150, 105, 0.1);
+  --secondary: #0284c7;
+  --accent: #d97706;
+  
+  --text-muted: #475569;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+}
+
+/* High contrast mode overrides */
+.high-contrast-mode {
+  --background: #000000;
+  --foreground: #ffffff;
+  
+  --card-bg: #000000;
+  --card-border: #ffffff;
+  
+  --primary: #00ff00; /* Neon Green for high visibility */
+  --primary-glow: transparent;
+  --secondary: #ffff00; /* Yellow */
+  --accent: #00ffff; /* Cyan */
+  
+  --text-muted: #e2e8f0;
+  --success: #00ff00;
+  --warning: #ffff00;
+  --error: #ff0000;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-text-muted: var(--text-muted);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
+/* Custom Accessibility Font Sizes */
+.font-size-large {
+  font-size: 1.125rem; /* +12% scaling */
+}
+.font-size-large h1 { font-size: 2.5rem; }
+.font-size-large h2 { font-size: 2rem; }
+.font-size-large h3 { font-size: 1.5rem; }
+.font-size-large p, .font-size-large li, .font-size-large button { font-size: 1.125rem; }
+
+.font-size-xlarge {
+  font-size: 1.25rem; /* +25% scaling */
+}
+.font-size-xlarge h1 { font-size: 2.75rem; }
+.font-size-xlarge h2 { font-size: 2.25rem; }
+.font-size-xlarge h3 { font-size: 1.75rem; }
+.font-size-xlarge p, .font-size-xlarge li, .font-size-xlarge button { font-size: 1.25rem; }
+
+/* Custom Glassmorphism styles */
+.glass-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel-hover:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 12px 40px 0 rgba(99, 102, 241, 0.15);
+  transform: translateY(-2px);
+}
+
+.glass-input {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--card-border);
+  color: var(--foreground);
+  transition: all 0.2s ease-in-out;
+}
+.glass-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* Custom high contrast helpers */
+.high-contrast-mode .glass-panel {
+  border: 2px solid #ffffff !important;
+  box-shadow: none !important;
+}
+
+.high-contrast-mode .glass-input {
+  border: 2px solid #ffffff !important;
+  background: #000000 !important;
+}
+
+.high-contrast-mode .glass-panel-hover:hover {
+  transform: none !important;
+  border-color: #ffff00 !important;
+}
+
+/* Animations */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    background-color: rgba(99, 102, 241, 0.1);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 50px rgba(99, 102, 241, 0.6);
+    background-color: rgba(99, 102, 241, 0.25);
+  }
+}
+
+.animate-breathe {
+  animation: breathe 8s infinite ease-in-out;
+}
+
+/* Global resets */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+/* Hide scrollbars but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* React Flow custom styling overrides */
+.react-flow__node {
+  border-radius: 9999px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  color: #ffffff !important;
+  text-align: center !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+  border: 2px solid rgba(255,255,255,0.2) !important;
+}
+
+.react-flow__edge-path {
+  stroke: rgba(99, 102, 241, 0.4) !important;
+  stroke-dasharray: 5 !important;
+  animation: dash 30s linear infinite !important;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.high-contrast-mode .react-flow__edge-path {
+  stroke: #ffffff !important;
+  stroke-dasharray: 0 !important;
+}
+
+/* Agentic UI Mood variables overrides (Translucent daytime scenery overlays) */
+.mood-anxious {
+  --background: linear-gradient(180deg, rgba(224, 242, 254, 0.5) 0%, rgba(209, 250, 229, 0.5) 100%); /* Misty valley sage and sky blue */
+  --foreground: #064e3b;
+  --card-bg: rgba(255, 255, 255, 0.75);
+  --card-border: rgba(16, 185, 129, 0.15);
+  --primary: #10b981; /* Calm green */
+  --secondary: #0284c7; /* Sky blue */
+  --accent: #0d9488;
+  --text-muted: #374151;
+}
+
+.mood-exhausted {
+  --background: linear-gradient(180deg, rgba(254, 243, 199, 0.5) 0%, rgba(250, 232, 255, 0.5) 100%); /* Soothing twilight / warm sunset */
+  --foreground: #4c1d95;
+  --card-bg: rgba(255, 255, 255, 0.78);
+  --card-border: rgba(168, 85, 247, 0.15);
+  --primary: #8b5cf6; /* Lavender */
+  --secondary: #d97706; /* Sunset Amber */
+  --accent: #db2777;
+  --text-muted: #4b5563;
+}
+
+.mood-good {
+  --background: linear-gradient(180deg, rgba(186, 230, 253, 0.45) 0%, rgba(187, 247, 208, 0.45) 100%); /* Sunny sky and blooming emerald hills */
+  --foreground: #0369a1;
+  --card-bg: rgba(255, 255, 255, 0.75);
+  --card-border: rgba(14, 116, 144, 0.15);
+  --primary: #0284c7;
+  --secondary: #059669;
+  --accent: #4f46e5;
+  --text-muted: #334155;
+}
+
+.mood-neutral {
+  --background: linear-gradient(180deg, rgba(210, 236, 255, 0.55) 0%, rgba(234, 252, 241, 0.55) 100%); /* Serene default nature scenery */
+  --foreground: #0f172a;
+  --card-bg: rgba(255, 255, 255, 0.72);
+  --card-border: rgba(0, 0, 0, 0.06);
+  --primary: #059669;
+  --secondary: #0284c7;
+  --accent: #d97706;
+  --text-muted: #475569;
+}
+
+/* Apply scenery photo background globally to the main shell wrapper */
+#app-root-shell {
+  background-image: var(--background), url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  transition: background-image 0.7s ease-in-out;
+}

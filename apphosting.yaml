@@ -1,0 +1,24 @@
+# Settings for Firebase App Hosting
+# Next.js App Router & Server Components native deployment
+# Docs: https://firebase.google.com/docs/app-hosting/configure
+
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 1024
+
+env:
+  - variable: NODE_ENV
+    value: production
+  - variable: GOOGLE_CLOUD_LOCATION
+    value: asia-south1
+  - variable: GCP_BIGQUERY_DATASET
+    value: mindpilot_analytics
+  - variable: GCP_PUBSUB_TOPIC_TELEMETRY
+    value: mindpilot-telemetry-events
+  - variable: GCP_PUBSUB_TOPIC_CRISIS
+    value: mindpilot-crisis-alerts
+  - variable: GCP_PUBSUB_TOPIC_ENVIRONMENT
+    value: mindpilot-environmental-alerts
