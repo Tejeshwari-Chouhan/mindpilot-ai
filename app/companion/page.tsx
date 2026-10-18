@@ -9,12 +9,17 @@ import Link from 'next/link';
 import CrisisHelplineBanner from '@/components/shared/CrisisHelplineBanner';
 import { detectCrisisLanguage } from '@/lib/safety';
 
+import { SEEDED_STUDENT_PROFILE, SEEDED_MENTAL_DNA } from '@/lib/mockData';
+import { getLocalEmpatheticResponse } from '@/lib/chat-engine';
+
 // Split into a search parameter consumer and the shell wrapper to handle NextJS Suspense requirements
 function ChatInterface() {
   const searchParams = useSearchParams();
   const defaultPrompt = searchParams.get('prompt') || '';
   
   const { profile, mentalDNA, history, loading } = useStudentData();
+  const effectiveProfile = profile || SEEDED_STUDENT_PROFILE;
+  const effectiveMentalDNA = mentalDNA || SEEDED_MENTAL_DNA;
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -24,9 +29,9 @@ function ChatInterface() {
 
   // Initialize chat history with a welcome message from AI
   useEffect(() => {
-    if (loading || !profile) return;
+    if (loading) return;
     
-    const welcomeText = `Hey ${profile.name}! 🤗 I'm your MindPilot Resilience Co-Pilot, but you can think of me as your best friend and second mom here to support you. I know studying for ${profile.academic.examType} gets super tough and backlogs feel heavy, but we're in this together. How are you feeling today? Did you sleep well and have a good meal? Let's chat!`;
+    const welcomeText = `Hey ${effectiveProfile.name}! 🤗 I'm your MindPilot Resilience Co-Pilot, but you can think of me as your best friend and second mom here to support you. I know studying for ${effectiveProfile.academic.examType} gets super tough and backlogs feel heavy, but we're in this together. How are you feeling today? Did you sleep well and have a good meal? Let's chat!`;
     
     setMessages([
       {
@@ -50,7 +55,7 @@ function ChatInterface() {
 
   const handleSendMessage = async (textToSend?: string) => {
     const messageText = textToSend || inputMessage;
-    if (!messageText.trim() || chatLoading || !profile || !mentalDNA) return;
+    if (!messageText.trim() || chatLoading) return;
 
     if (detectCrisisLanguage(messageText)) {
       setShowCrisisBanner(true);
@@ -86,13 +91,13 @@ function ChatInterface() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: historyPayload,
-          profile,
-          mentalDNA
+          profile: effectiveProfile,
+          mentalDNA: effectiveMentalDNA
         })
       });
 
       if (!res.ok) {
-        throw new Error("Co-pilot connection interrupted.");
+        throw new Error(`Co-pilot connection status ${res.status}`);
       }
 
       const data = await res.json();
@@ -107,15 +112,23 @@ function ChatInterface() {
 
       setMessages(prev => [...prev, aiResponse]);
     } catch (err: any) {
-      console.error(err);
-      const errorMsg: ChatMessage = {
-        id: `error-${Date.now()}`,
+      console.info("Using local empathetic AI engine for response:", err);
+      const fallbackReply = getLocalEmpatheticResponse(
+        messageText,
+        effectiveProfile.academic.examType,
+        effectiveMentalDNA.primaryStressors,
+        effectiveMentalDNA.emotionalResilience,
+        effectiveProfile.name
+      );
+
+      const aiResponse: ChatMessage = {
+        id: `ai-${Date.now()}`,
         sender: 'ai',
-        text: "My neural models are experiencing connection jitters. I'm operating in localized safety mode. Remember: I am an AI wellness companion, not a medical professional. Please reach out to your parents or coaching counselor if things get too heavy.",
+        text: fallbackReply,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isDisclaimer: true
+        isDisclaimer: fallbackReply.includes('Disclaimer')
       };
-      setMessages(prev => [...prev, errorMsg]);
+      setMessages(prev => [...prev, aiResponse]);
     } finally {
       setChatLoading(false);
     }
@@ -128,7 +141,7 @@ function ChatInterface() {
     }
   };
 
-  if (loading || !profile || !mentalDNA) {
+  if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center min-h-[70vh]">
         <div className="flex flex-col items-center gap-2">
@@ -143,30 +156,30 @@ function ChatInterface() {
   const generateDynamicChips = () => {
     const chips = ["I need a 4-minute panic reset drill."];
     
-    if (profile?.academic?.studyHoursPerDay && profile.academic.studyHoursPerDay > 9) {
-      chips.push(`How do I manage studying ${profile.academic.studyHoursPerDay} hours without burning out?`);
+    if (effectiveProfile?.academic?.studyHoursPerDay && effectiveProfile.academic.studyHoursPerDay > 9) {
+      chips.push(`How do I manage studying ${effectiveProfile.academic.studyHoursPerDay} hours without burning out?`);
     } else {
       chips.push("How do I maintain my focus rhythm without burning out?");
     }
 
-    if (mentalDNA?.primaryStressors) {
-      if (mentalDNA.primaryStressors.includes('Parent Expectations') || mentalDNA.primaryStressors.includes('parent expectations')) {
+    if (effectiveMentalDNA?.primaryStressors) {
+      if (effectiveMentalDNA.primaryStressors.includes('Parent Expectations') || effectiveMentalDNA.primaryStressors.includes('parent expectations')) {
         chips.push("My parents are constantly putting pressure on me. What should I do?");
       }
-      if (mentalDNA.primaryStressors.some(s => s.toLowerCase().includes('physics'))) {
-        chips.push(`I am feeling very anxious about my ${profile?.academic?.examType || 'exam'} Physics prep.`);
+      if (effectiveMentalDNA.primaryStressors.some(s => s.toLowerCase().includes('physics'))) {
+        chips.push(`I am feeling very anxious about my ${effectiveProfile?.academic?.examType || 'exam'} Physics prep.`);
       }
-      if (mentalDNA.primaryStressors.some(s => s.toLowerCase().includes('mock'))) {
+      if (effectiveMentalDNA.primaryStressors.some(s => s.toLowerCase().includes('mock'))) {
         chips.push("I had a score drop in my recent mock test. Can we talk about it?");
       }
-      if (mentalDNA.primaryStressors.some(s => s.toLowerCase().includes('backlog'))) {
+      if (effectiveMentalDNA.primaryStressors.some(s => s.toLowerCase().includes('backlog'))) {
         chips.push("My syllabus backlog is building up and making me panic.");
       }
     }
     
     // Fallback if chips are too few
     if (chips.length < 3) {
-      chips.push(`How do I crack ${profile?.academic?.examType || 'exams'} while staying happy?`);
+      chips.push(`How do I crack ${effectiveProfile?.academic?.examType || 'exams'} while staying happy?`);
     }
     return chips;
   };
@@ -185,15 +198,15 @@ function ChatInterface() {
           
           <div className="bg-white/5 border border-card-border p-3.5 rounded-xl text-xs">
             <span className="text-text-muted block font-semibold">Active Profile</span>
-            <span className="text-foreground font-bold text-sm block mt-1">{profile.academic.examType} Aspirant</span>
-            <span className="text-text-muted block mt-1">Target Score: {profile.academic.targetScore}</span>
+            <span className="text-foreground font-bold text-sm block mt-1">{effectiveProfile.academic.examType} Aspirant</span>
+            <span className="text-text-muted block mt-1">Target Score: {effectiveProfile.academic.targetScore}</span>
           </div>
 
           <div className="bg-white/5 border border-card-border p-3.5 rounded-xl text-xs space-y-3">
             <div>
               <span className="text-[10px] text-text-muted uppercase tracking-wider block font-semibold">Current Stressors</span>
               <div className="flex flex-wrap gap-1.5 mt-1">
-                {mentalDNA.primaryStressors.map((s, idx) => (
+                {effectiveMentalDNA.primaryStressors.map((s, idx) => (
                   <span key={idx} className="bg-white/5 px-2 py-0.5 rounded text-[10px] border border-card-border">
                     {s}
                   </span>
@@ -205,15 +218,15 @@ function ChatInterface() {
               <span className="text-[10px] text-text-muted uppercase tracking-wider block font-semibold">Resilience Level</span>
               <div className="flex items-center gap-2 mt-1">
                 <div className="flex-1 bg-white/5 h-1.5 rounded-full overflow-hidden border border-card-border">
-                  <div className="h-full bg-primary" style={{ width: `${mentalDNA.emotionalResilience}%` }}></div>
+                  <div className="h-full bg-primary" style={{ width: `${effectiveMentalDNA.emotionalResilience}%` }}></div>
                 </div>
-                <span className="font-bold">{mentalDNA.emotionalResilience}%</span>
+                <span className="font-bold">{effectiveMentalDNA.emotionalResilience}%</span>
               </div>
             </div>
 
             <div>
               <span className="text-[10px] text-text-muted uppercase tracking-wider block font-semibold">Recovery Mode</span>
-              <span className="text-foreground font-semibold block mt-0.5">{mentalDNA.preferredInterventionStyle}</span>
+              <span className="text-foreground font-semibold block mt-0.5">{effectiveMentalDNA.preferredInterventionStyle}</span>
             </div>
           </div>
         </div>

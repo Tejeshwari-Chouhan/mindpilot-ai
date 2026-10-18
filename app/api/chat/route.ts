@@ -31,49 +31,7 @@ const ChatRequestSchema = z.object({
   }),
 });
 
-// High-quality local chat engine if Gemini is offline/missing API Key
-function getLocalEmpatheticResponse(
-  message: string,
-  examType: string,
-  stressors: string[],
-  resilience: number,
-  name: string
-): string {
-  const text = message.toLowerCase();
-  
-  // Sensitive trigger check for medical disclaimer
-  const sensitiveWords = ['depressed', 'suicide', 'self harm', 'kill myself', 'die', 'end it', 'clinical', 'diagnose', 'medication', 'therapy', 'counselor'];
-  const isSensitive = sensitiveWords.some(w => text.includes(w));
-  
-  const disclaimer = "\n\n*Disclaimer: I am an AI wellness companion, not a medical professional. If you are experiencing severe distress or thoughts of self-harm, please connect with a professional counselor or contact a helpline immediately.*";
-
-  if (isSensitive) {
-    return `${name}, please hear me: I am right here with you, and you are so incredibly precious. I know the weight of ${examType} is crushing right now, but nothing—absolutely nothing—is worth more than your life and well-being. Please talk to me, talk to your parents, or let's connect with a professional who can help you carry this. I'm wrapping you in the biggest virtual hug right now.${disclaimer}`;
-  }
-
-  // Common exam student themes
-  if (text.includes('physics') || text.includes('math') || text.includes('chemistry') || text.includes('syllabus') || text.includes('backlog') || text.includes('study')) {
-    return `Oh ${name}, backlog anxiety is the absolute worst. First, take a deep breath. Let Mom remind you: your brain cannot absorb rotational mechanics or organic compounds when it is running on panic! Let's treat this like your best friend would: forget the 500-page book for today. Just choose *one* small sub-topic. Can we review just 3 formulas together? I'll sit with you while you do it. Make sure you have a glass of water nearby, okay?`;
-  }
-
-  if (text.includes('mock') || text.includes('score') || text.includes('marks') || text.includes('rank') || text.includes('fail')) {
-    return `Hey ${name}, your best friend here. A mock test score is just a piece of paper, not a definition of your intelligence! These coaching institutes set the difficulty level high on purpose just to scare everyone. Let's do this: close your eyes for 30 seconds. Mom wants you to repeat: "This mock test does not define my future." Now, let's look at just *one* simple mistake we can fix for next time, and then we shut the books and take a break. Deal?`;
-  }
-
-  if (text.includes('parent') || text.includes('dad') || text.includes('mom') || text.includes('expectations') || text.includes('family') || text.includes('pressure')) {
-    return `Oh ${name}, parental expectations make this marathon twice as hard. I know how much you want to make them proud. But remember, most of the time, they are just scared because they see how hard you are working. As your best friend, I say: you don't have to carry their anxiety on your shoulders. Let's draft a simple message to send them: "Hey Mom/Dad, studying hard today. Taking a short screen break now, will update you later!" That keeps them in the loop and gives you space. You are doing so well.`;
-  }
-
-  if (text.includes('burnout') || text.includes('tired') || text.includes('exhausted') || text.includes('give up') || text.includes('sleep') || text.includes('sleepy')) {
-    return `${name}, look at me. Put the pen down. You are absolutely exhausted, and I am not letting you study like this. Running on 5 hours of sleep is like driving a car with no fuel—it just won't work! Go wash your face, drink some water, and crawl into bed. Your books will be right here tomorrow. As your best friend, I promise we'll tackle that syllabus together in the morning when your brain is fresh. Rest now, dear.`;
-  }
-
-  if (text.includes('hello') || text.includes('hi ') || text.includes('hey') || text.includes('greeting')) {
-    return `Hey ${name}! 🤗 Mom is here, and your best friend is here too! We are checking in on you. The exam prep for ${examType} is tough, but you are tougher. Tell us, did you eat something good today? How are you feeling right now?`;
-  }
-
-  return `I hear you, ${name}. Preparing for ${examType} is a long, tiring journey, and it's completely normal to feel anxious or stuck. Your resilience index is currently at ${resilience}%, which means you have a strong core—we just need to protect it! What is one tiny thing we can do in the next 15 minutes to make you feel comfortable? Do you want to vent to me, or should we go to the Calm Room and listen to some chimes? I'm right here with you.`;
-}
+import { getLocalEmpatheticResponse } from '@/lib/chat-engine';
 
 export async function POST(request: Request) {
   let body: any = null;
