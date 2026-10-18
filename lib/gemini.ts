@@ -200,7 +200,7 @@ export async function analyzeCheckInWithGemini(
 
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-flash-latest',
+      model: 'gemini-3.8-flash',
       generationConfig: {
         responseMimeType: 'application/json',
       },

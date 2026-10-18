@@ -11,6 +11,7 @@ import { detectCrisisLanguage } from '@/lib/safety';
 
 import { SEEDED_STUDENT_PROFILE, SEEDED_MENTAL_DNA } from '@/lib/mockData';
 import { getLocalEmpatheticResponse } from '@/lib/chat-engine';
+import { generateLiveGeminiCompanionReply } from '@/lib/gemini-live';
 
 // Split into a search parameter consumer and the shell wrapper to handle NextJS Suspense requirements
 function ChatInterface() {
@@ -86,49 +87,70 @@ function ChatInterface() {
     });
 
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: historyPayload,
-          profile: effectiveProfile,
-          mentalDNA: effectiveMentalDNA
-        })
-      });
-
-      if (!res.ok) {
-        throw new Error(`Co-pilot connection status ${res.status}`);
-      }
-
-      const data = await res.json();
-      
-      const aiResponse: ChatMessage = {
-        id: `ai-${Date.now()}`,
-        sender: 'ai',
-        text: data.text,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isDisclaimer: data.isDisclaimer
-      };
-
-      setMessages(prev => [...prev, aiResponse]);
-    } catch (err: any) {
-      console.info("Using local empathetic AI engine for response:", err);
-      const fallbackReply = getLocalEmpatheticResponse(
+      // 1. Generate live, real reasoning directly via Google's Gemini LLM
+      const realLlmText = await generateLiveGeminiCompanionReply(
         messageText,
-        effectiveProfile.academic.examType,
-        effectiveMentalDNA.primaryStressors,
-        effectiveMentalDNA.emotionalResilience,
-        effectiveProfile.name
+        historyPayload,
+        effectiveProfile,
+        effectiveMentalDNA
       );
 
       const aiResponse: ChatMessage = {
         id: `ai-${Date.now()}`,
         sender: 'ai',
-        text: fallbackReply,
+        text: realLlmText,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isDisclaimer: fallbackReply.includes('Disclaimer')
+        isDisclaimer: realLlmText.includes('Disclaimer')
       };
+
       setMessages(prev => [...prev, aiResponse]);
+    } catch (llmErr: any) {
+      console.warn("Direct Gemini LLM call fell back, attempting backend API /api/chat:", llmErr);
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: historyPayload,
+            profile: effectiveProfile,
+            mentalDNA: effectiveMentalDNA
+          })
+        });
+
+        if (!res.ok) {
+          throw new Error(`Co-pilot connection status ${res.status}`);
+        }
+
+        const data = await res.json();
+        
+        const aiResponse: ChatMessage = {
+          id: `ai-${Date.now()}`,
+          sender: 'ai',
+          text: data.text,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isDisclaimer: data.isDisclaimer
+        };
+
+        setMessages(prev => [...prev, aiResponse]);
+      } catch (err: any) {
+        console.info("Using local empathetic AI engine for response:", err);
+        const fallbackReply = getLocalEmpatheticResponse(
+          messageText,
+          effectiveProfile.academic.examType,
+          effectiveMentalDNA.primaryStressors,
+          effectiveMentalDNA.emotionalResilience,
+          effectiveProfile.name
+        );
+
+        const aiResponse: ChatMessage = {
+          id: `ai-${Date.now()}`,
+          sender: 'ai',
+          text: fallbackReply,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isDisclaimer: fallbackReply.includes('Disclaimer')
+        };
+        setMessages(prev => [...prev, aiResponse]);
+      }
     } finally {
       setChatLoading(false);
     }

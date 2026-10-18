@@ -84,7 +84,7 @@ export async function generateVertexGeminiResponse(
     const directGenAI = getDirectGenAI();
     if (directGenAI) {
       const model = directGenAI.getGenerativeModel({
-        model: 'gemini-flash-latest',
+        model: 'gemini-3.8-flash',
         systemInstruction: options.systemInstruction,
       });
       const result = await model.generateContent(prompt);
