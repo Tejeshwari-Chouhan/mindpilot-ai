@@ -44,17 +44,32 @@ Guidelines:
         systemInstruction,
       });
 
-      // Filter and format previous history turns for Gemini
-      const formattedHistory = history
-        .slice(0, -1)
-        .filter(h => h.parts && h.parts.trim().length > 0)
-        .map(h => ({
-          role: h.role,
-          parts: [{ text: h.parts }]
-        }));
+      // Format previous history turns for Gemini
+      // Gemini strictly requires the first history turn to be from 'user'
+      // and turns to alternate between 'user' and 'model'
+      const validHistory: Array<{ role: 'user' | 'model'; parts: [{ text: string }] }> = [];
+      let expectedRole: 'user' | 'model' = 'user';
+
+      for (const h of history.slice(0, -1)) {
+        if (!h.parts || !h.parts.trim()) continue;
+        // Skip initial AI welcome greetings so history strictly begins with a user message
+        if (validHistory.length === 0 && h.role !== 'user') continue;
+        if (h.role === expectedRole) {
+          validHistory.push({
+            role: h.role,
+            parts: [{ text: h.parts }]
+          });
+          expectedRole = expectedRole === 'user' ? 'model' : 'user';
+        }
+      }
+
+      // Ensure last history turn before sendMessage(prompt) was from 'model'
+      if (validHistory.length > 0 && validHistory[validHistory.length - 1].role === 'user') {
+        validHistory.pop();
+      }
 
       const chat = model.startChat({
-        history: formattedHistory,
+        history: validHistory,
       });
 
       const result = await chat.sendMessage(prompt);
