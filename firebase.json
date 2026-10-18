@@ -1,21 +1,13 @@
 {
   "hosting": {
-    "public": "public",
+    "public": "out",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
     "cleanUrls": true,
-    "rewrites": [
-      {
-        "source": "**",
-        "run": {
-          "serviceId": "mindpilot-ai",
-          "region": "asia-south1"
-        }
-      }
-    ],
+    "trailingSlash": false,
     "headers": [
       {
         "source": "/_next/static/**",

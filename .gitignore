@@ -37,8 +37,9 @@ yarn-error.log*
 # legacy nested backup
 mentalwelness-main/
 
-# vercel
+# vercel & firebase
 .vercel
+.firebase/
 
 # typescript
 *.tsbuildinfo
