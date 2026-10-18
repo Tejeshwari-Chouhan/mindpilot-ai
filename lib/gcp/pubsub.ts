@@ -148,7 +148,7 @@ export function getRecentPubSubEvents(): PubSubEventEnvelope[] {
       timestamp: new Date(Date.now() - 3600000).toISOString(),
       eventType: 'CHECKIN_TELEMETRY',
       priority: 'NORMAL',
-      payload: { studentName: 'Bhavesh', examType: 'JEE', stressLevel: 7, burnoutRisk: 68 },
+      payload: { studentName: 'User', examType: 'JEE', stressLevel: 7, burnoutRisk: 68 },
     });
     recentEventBuffer.push({
       eventId: 'evt-init-002',

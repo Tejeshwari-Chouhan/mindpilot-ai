@@ -72,21 +72,23 @@ export default function DashboardPage() {
   // Core configuration based on burnout risk (translated to supportive mind weather)
   const getCoreConfig = (risk: number) => {
     if (risk >= 65) {
+      const studentName = profile?.name || 'User';
       return {
         color: 'from-error/60 to-secondary/60 shadow-[0_0_35px_rgba(239,68,68,0.3)] border-error/20',
         glowColor: 'bg-error animate-pulse',
         status: 'Needs Care 🌸',
         statusColor: 'text-error bg-error/10 border-error/20',
-        message: `Hey Dev, it looks like things are feeling a bit heavy today. That is completely okay. Let's take a deep breath. No rush, no pressure—your well-being is the only thing that matters right now.`
+        message: `Hey ${studentName}, it looks like things are feeling a bit heavy today. That is completely okay. Let's take a deep breath. No rush, no pressure—your well-being is the only thing that matters right now.`
       };
     }
+    const studentName = profile?.name || 'User';
     if (risk >= 40) {
       return {
         color: 'from-warning/60 to-primary/60 shadow-[0_0_35px_rgba(245,158,11,0.2)] border-warning/20',
         glowColor: 'bg-warning',
         status: 'Cloudy Pacing 🌤️',
         statusColor: 'text-warning bg-warning/10 border-warning/20',
-        message: `Hey Dev, keeping your routine balanced is key. Take regular small breaks today, drink a cup of tea, and remember to be kind to your mind.`
+        message: `Hey ${studentName}, keeping your routine balanced is key. Take regular small breaks today, drink a cup of tea, and remember to be kind to your mind.`
       };
     }
     return {
@@ -94,7 +96,7 @@ export default function DashboardPage() {
       glowColor: 'bg-success',
       status: 'Bright Flow ☀️',
       statusColor: 'text-success bg-success/10 border-success/20',
-      message: `Hey Dev, your mind feels bright and steady! Enjoy your study flow today, take comfortable breaks, and write down your small victories.`
+      message: `Hey ${studentName}, your mind feels bright and steady! Enjoy your study flow today, take comfortable breaks, and write down your small victories.`
     };
   };
 
